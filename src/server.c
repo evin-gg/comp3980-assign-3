@@ -20,8 +20,6 @@ void cleanup(int sig) __attribute__((noreturn));
 int main(void)
 {
     struct sockaddr_un serverAddress;
-    struct sockaddr_un clientAddress;
-    socklen_t          addressLength;
     int                serverfd;
     pid_t              pid;
 
@@ -58,12 +56,10 @@ int main(void)
         goto cleanup;
     }
 
-    addressLength = sizeof(clientAddress);
-
     // accept clients in a loop
     while(1)
     {
-        int clientfd = accept(serverfd, (struct sockaddr *)&clientAddress, &addressLength);
+        int clientfd = accept(serverfd, NULL, 0);
         if(clientfd < 0)
         {
             perror("Could not accept client request");

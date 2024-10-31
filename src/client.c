@@ -15,15 +15,15 @@ int writeToServer(int *clientfd);
 
 int main(int argc, char *argv[])
 {
-    int clientfd;
-    char    incomingMsg[MSG_SIZE];
-    ssize_t bytesRead;
+    int                clientfd;
+    char               incomingMsg[MSG_SIZE];
+    ssize_t            bytesRead;
     struct sockaddr_un serverAddress;
-    int         opt;
-    const char *filter;
-    const char *message;
-    char        msgBuffer[MSG_SIZE];
-    size_t      required_size;
+    int                opt;
+    const char        *filter;
+    const char        *message;
+    char               msgBuffer[MSG_SIZE];
+    size_t             required_size;
 
     filter  = NULL;
     message = NULL;
