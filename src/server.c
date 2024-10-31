@@ -10,11 +10,11 @@
 #include <unistd.h>
 
 #define BUFFER_SIZE 256
-// #define PERMISSION 0666
+//  #define PERMISSION 0666
 #define MAX_CLIENTS 5
 #define SOCKET_DIR "/tmp/evinServerSocket"
 
-void recieve_message(int clientfd) __attribute__((noreturn));
+void recieve_message(int clientfd);
 int  apply_filter(const char *filter, char *msg, size_t msg_size);
 void cleanup(int sig) __attribute__((noreturn));
 
@@ -30,7 +30,11 @@ int main(void)
     signal(SIGINT, cleanup);
 
     // unlink and existing then make a socket
-    unlink(SOCKET_DIR);
+    if(unlink(SOCKET_DIR) < 0)
+    {
+        printf("No directory found\n");
+    }
+
     serverfd = socket(AF_UNIX, SOCK_STREAM, 0);
     if(serverfd < 0)
     {
@@ -43,7 +47,7 @@ int main(void)
     serverAddress.sun_family = AF_UNIX;
     strncpy(serverAddress.sun_path, SOCKET_DIR, sizeof(serverAddress.sun_path) - 1);
 
-    // bind the fd
+    //    // bind the fd
     if(bind(serverfd, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) == -1)
     {
         perror("Failed to bind server");
@@ -51,13 +55,13 @@ int main(void)
     }
 
     // listen
+    printf("Started listening...");
     if(listen(serverfd, MAX_CLIENTS) < 0)
     {
         perror("Server could not listen");
         goto cleanup;
     }
 
-    printf("Started listening...");
     addressLength = sizeof(clientAddress);
 
     // accept clients in a loop
@@ -81,6 +85,7 @@ int main(void)
         {
             close(serverfd);
             recieve_message(clientfd);
+            exit(EXIT_SUCCESS);
         }
 
         else
@@ -98,7 +103,7 @@ cleanup:
 void cleanup(int sig)
 {
     (void)sig;
-    unlink(SOCKET_DIR);
+    //    unlink(SOCKET_DIR);
     _exit(EXIT_SUCCESS);
 }
 
@@ -192,5 +197,4 @@ void recieve_message(int clientfd)
     }
 
     close(clientfd);
-    exit(EXIT_SUCCESS);
 }

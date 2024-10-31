@@ -10,7 +10,7 @@
 #define SERVER_PATH "/tmp/server_fifo"
 #define FILTER_SIZE 10
 #define MSG_SIZE 256
-
+#define SOCKET_DIR "/tmp/evinServerSocket"
 void *writeToFIFO(void *arg);
 
 // All arguments that need to be passed into the thread function
@@ -24,11 +24,11 @@ typedef struct
 // Start of program
 int main(int argc, char *argv[])
 {
-    int       clientfd;
-    int       serverfd;
-    char      incomingMsg[MSG_SIZE];
-    ssize_t   bytesRead;
-    pthread_t writerThread;
+    int     clientfd;
+    int     serverfd;
+    char    incomingMsg[MSG_SIZE];
+    ssize_t bytesRead;
+    // pthread_t writerThread;
 
     // Variables for input
     int         opt;
@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+//-----------------------------------------------CHANGE--------------------------------------------------
     // Open the fd for writing to the FIFO. Blocks if server is not on
     clientfd = open(CLIENT_PATH, O_WRONLY | O_CLOEXEC);
     if(clientfd == -1)
@@ -111,7 +112,7 @@ int main(int argc, char *argv[])
     close(clientfd);
     close(serverfd);
     return EXIT_SUCCESS;
-
+//------------------------------------------------CHANGE-----------------------------------------------
 cleanup:
     close(clientfd);
     close(serverfd);
