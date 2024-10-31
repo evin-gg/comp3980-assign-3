@@ -47,7 +47,7 @@ int main(void)
     serverAddress.sun_family = AF_UNIX;
     strncpy(serverAddress.sun_path, SOCKET_DIR, sizeof(serverAddress.sun_path) - 1);
 
-    //    // bind the fd
+    // bind the fd
     if(bind(serverfd, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) == -1)
     {
         perror("Failed to bind server");
@@ -55,7 +55,7 @@ int main(void)
     }
 
     // listen
-    printf("Started listening...");
+    printf("Started listening...\n");
     if(listen(serverfd, MAX_CLIENTS) < 0)
     {
         perror("Server could not listen");
@@ -103,7 +103,7 @@ cleanup:
 void cleanup(int sig)
 {
     (void)sig;
-    //    unlink(SOCKET_DIR);
+    unlink(SOCKET_DIR);
     _exit(EXIT_SUCCESS);
 }
 
