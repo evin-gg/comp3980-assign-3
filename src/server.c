@@ -10,7 +10,6 @@
 #include <unistd.h>
 
 #define BUFFER_SIZE 256
-//  #define PERMISSION 0666
 #define MAX_CLIENTS 5
 #define SOCKET_DIR "/tmp/evinServerSocket"
 
@@ -144,8 +143,6 @@ int apply_filter(const char *filter, char *msg, size_t msg_size)
 
 void recieve_message(int clientfd)
 {
-    // int  serverfd;
-    // int  clientfd = *((int *)arg);    // Cast and dereference the argument
     char buff[BUFFER_SIZE];
 
     const char *filter;
@@ -163,14 +160,6 @@ void recieve_message(int clientfd)
 
     // Null terminate the end of the buffer
     buff[bytesRead] = '\0';
-
-    // Open the server fd
-    // serverfd = open(SERVER_PATH, O_WRONLY | O_CLOEXEC);
-    // if(serverfd == -1)
-    // {
-    //     fprintf(stderr, "Error opening server file descriptor\n");
-    //     pthread_exit(NULL);
-    // }
 
     // Split the argument and the message
     filter  = strtok_r(buff, "\n", &state);
