@@ -30,10 +30,7 @@ int main(void)
     signal(SIGINT, cleanup);
 
     // unlink and existing then make a socket
-    if(unlink(SOCKET_DIR) < 0)
-    {
-        printf("No directory found\n");
-    }
+    unlink(SOCKET_DIR);
 
     serverfd = socket(AF_UNIX, SOCK_STREAM, 0);
     if(serverfd < 0)
