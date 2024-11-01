@@ -29,7 +29,7 @@ int main(void)
     // unlink and existing then make a socket
     unlink(SOCKET_DIR);
 
-    serverfd = socket(AF_UNIX, SOCK_STREAM, 0);
+    serverfd = socket(AF_UNIX, SOCK_STREAM, 0); // NOLINT(android-cloexec-socket)
     if(serverfd < 0)
     {
         perror("Could not open socket");

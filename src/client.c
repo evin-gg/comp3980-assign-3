@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     }
 
     // create socket
-    clientfd = socket(AF_UNIX, SOCK_STREAM, 0);
+    clientfd = socket(AF_UNIX, SOCK_STREAM, 0); // NOLINT(android-cloexec-socket)
     if(clientfd < 0)
     {
         perror("Could not create socket");
