@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #define MSG_SIZE 256
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
     }
 
     // create socket
-    clientfd = socket(AF_INET, SOCK_STREAM, 0);
+    clientfd = socket(AF_INET, SOCK_STREAM, 0);    // NOLINT(android-cloexec-socket)
     if(clientfd < 0)
     {
         perror("Could not create socket");

@@ -29,7 +29,7 @@ int main(void)
     signal(SIGINT, cleanup);
 
     // Create a TCP socket
-    serverfd = socket(AF_INET, SOCK_STREAM, 0); //NOLINT(android-cloexec-socket)
+    serverfd = socket(AF_INET, SOCK_STREAM, 0);    // NOLINT(android-cloexec-socket)
     if(serverfd < 0)
     {
         perror("Could not open socket");
