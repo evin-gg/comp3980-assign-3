@@ -1,24 +1,20 @@
-#include <fcntl.h>
-#include <pthread.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/un.h>
 #include <unistd.h>
 
 #define MSG_SIZE 256
-#define SOCKET_DIR "/tmp/evinServerSocket"
-
-int writeToServer(int *clientfd);
+#define SERVER_IP "127.0.0.1"
+#define SERVER_PORT 8000
 
 int main(int argc, char *argv[])
 {
     int                clientfd;
     char               incomingMsg[MSG_SIZE];
     ssize_t            bytesRead;
-    struct sockaddr_un serverAddress;
+    struct sockaddr_in serverAddress;
     int                opt;
     const char        *filter;
     const char        *message;
@@ -57,7 +53,7 @@ int main(int argc, char *argv[])
     }
 
     // create socket
-    clientfd = socket(AF_UNIX, SOCK_STREAM, 0);    // NOLINT(android-cloexec-socket)
+    clientfd = socket(AF_INET, SOCK_STREAM, 0);
     if(clientfd < 0)
     {
         perror("Could not create socket");
@@ -66,11 +62,12 @@ int main(int argc, char *argv[])
 
     // defining the server address
     memset(&serverAddress, 0, sizeof(serverAddress));
-    serverAddress.sun_family = AF_UNIX;
-    strncpy(serverAddress.sun_path, SOCKET_DIR, sizeof(serverAddress.sun_path) - 1);
+    serverAddress.sin_family      = AF_INET;
+    serverAddress.sin_port        = htons(SERVER_PORT);
+    serverAddress.sin_addr.s_addr = inet_addr(SERVER_IP);
 
     // connect to server
-    if(connect(clientfd, (struct sockaddr *)&serverAddress, sizeof(serverAddress)))
+    if(connect(clientfd, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0)
     {
         perror("Could not connect to the server");
         goto cleanup;
@@ -81,20 +78,21 @@ int main(int argc, char *argv[])
     snprintf(msgBuffer, required_size, "%s\n%s", filter, message);
 
     // send the data
-    if(write(clientfd, msgBuffer, MSG_SIZE) < 0)
+    if(write(clientfd, msgBuffer, required_size) < 0)
     {
         perror("Could not send message to server");
         goto cleanup;
     }
 
-    // recieve
+    // receive
     bytesRead = read(clientfd, incomingMsg, MSG_SIZE);
     if(bytesRead < 0)
     {
         perror("Could not read incoming data");
         goto cleanup;
     }
-    printf("Recieved: %s\n", incomingMsg);
+    incomingMsg[bytesRead] = '\0';
+    printf("Received: %s\n", incomingMsg);
 
 cleanup:
     close(clientfd);
