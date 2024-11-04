@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#define SIGMSGSIZE 21
 #define BUFFER_SIZE 256
 #define MAX_CLIENTS 5
 #define PORT 8000
@@ -92,6 +93,7 @@ cleanup:
 void cleanup(int sig)
 {
     (void)sig;
+    write(1, "\nTerminating server\n", SIGMSGSIZE);
     _exit(EXIT_SUCCESS);
 }
 
