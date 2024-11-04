@@ -64,6 +64,7 @@ int main(void)
         if(clientfd < 0)
         {
             perror("Could not accept client request");
+            continue;
         }
 
         pid = fork();
@@ -71,17 +72,15 @@ int main(void)
         {
             perror("Failed to fork");
             close(clientfd);
+            continue;
         }
-        else if(pid == 0)
+        if(pid == 0)
         {
             close(serverfd);
             recieve_message(clientfd);
             exit(EXIT_SUCCESS);
         }
-        else
-        {
-            close(clientfd);
-        }
+        close(clientfd);
     }
 
     // Cleanup on error
